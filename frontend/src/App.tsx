@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
-function App() {
-  const [count, setCount] = useState(0)
-
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import HomePage from "./pages/home-page";
+import LoginPage from "./pages/login-page";
+import FilePage from "./pages/file-page";
+import ProtectedRoute from "./components/routes/ProtectedRoute";
+import RegisterForm from "./pages/register-page";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "./store";
+import { GetMyDetails } from "./features/auth/authSlice";
+const App = () => {
+  const dispatch: AppDispatch = useDispatch();
+  useEffect(() => {
+    dispatch(GetMyDetails());
+  }, [dispatch]);
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div className="flex items-center justify-center h-screen overflow-hidden">
+      <Router>
+        <Routes>
+          <Route path="/" Component={HomePage} />
+          <Route path="/register" Component={RegisterForm} />
+          <Route
+            path="/file-upload"
+            element={
+              <ProtectedRoute>
+                <FilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/login" Component={LoginPage} />
+        </Routes>
+      </Router>
+    </div>
+  );
+};
 
-export default App
+export default App;
